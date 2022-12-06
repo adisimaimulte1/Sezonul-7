@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
 import com.qualcomm.robotcore.hardware.*;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(group = "drive")
 
@@ -23,10 +24,11 @@ public class TeleOp_Test_S7 extends LinearOpMode {
     {
         return x*x*x;
     }
-    double liftSensivity=0.06;
+    double liftSensivity=0.075;
+    double lowerSensitivity=0.05;
     @Override
     public void runOpMode() throws InterruptedException {
-        double sensivity=0.6, position=0.3, movementSensitivity=0.6, grip=0, liftP=0;
+        double sensivity=0.6, position=0.3, movementSensitivity=-0.6, grip=0, liftP=0, lowerP=0;
         boolean u1=true, u2=true, s1=true, s2=true;
         DcMotor umard = hardwareMap.dcMotor.get("umarDreapta");
         DcMotor umars= hardwareMap.dcMotor.get("umarStanga");
@@ -56,12 +58,12 @@ public class TeleOp_Test_S7 extends LinearOpMode {
             //pozitie antebrat
             if (gamepad2.right_bumper)
             {
-                liftSensivity+=0.005;
+                lowerSensitivity+=0.005;
                 Thread.sleep(500);
             }
             if (gamepad2.left_bumper)
             {
-                liftSensivity-=0.005;
+                lowerSensitivity-=0.005;
                 Thread.sleep(500);
             }
             /*if (gamepad2.dpad_up)
@@ -84,16 +86,26 @@ public class TeleOp_Test_S7 extends LinearOpMode {
                 grip=0.3;
             //lift
             if(gamepad2.left_stick_y<-0.2)
-                liftP=liftPower((double)holder.getCurrentPosition()*360/8192);
-
+                liftP = liftPower((double) holder.getCurrentPosition() * 360 / 8192);
+            else if(gamepad2.left_stick_y>0.2)
+            {
+                liftP=antiG((double)holder.getCurrentPosition()*360/8192);
+            }
             else
-                liftP=0;
-                position=liftAngle((double)holder.getCurrentPosition()*360/8192);
-            umard.setPower(liftP);
-            umars.setPower(liftP);
-            holder.setPower(-liftP);
+                liftP = 0;
+                umard.setPower(liftP);
+                umars.setPower(liftP);
+                holder.setPower(-liftP);
+            //lower
+
+
+
+            position=liftAngle((double)holder.getCurrentPosition()*360/8192);
+
             telemetry.addData("y ", gamepad2.left_stick_y);
             telemetry.addData("power ", liftPower((double)holder.getCurrentPosition()*360/8192));
+            telemetry.addData("power2 ", antiG((double)holder.getCurrentPosition()*360/8192));
+
             //control si atribuire
             cotd.setPosition(position);
             cots.setPosition(position);
@@ -109,7 +121,7 @@ public class TeleOp_Test_S7 extends LinearOpMode {
     double liftPower (double x)
     {
         x=x/10;
-        double y=-0.0008*x*x*x*x-0.0065*x*x*x+0.1272*x*x-0.5397*x+10;
+        double y=-0.0026*x*x*x*x+0.028*x*x*x-0.039*x*x-0.3753*x+10;
         if (x<=10.5)
             return y*liftSensivity;
         else
@@ -120,10 +132,20 @@ public class TeleOp_Test_S7 extends LinearOpMode {
         if (x<=55){
             return 0.25;
         }
-        else if (x>55 && x<120){
-            return (x-55)*0.007+0.27;
+        else if (x>55 && x<110){
+            return (x-55)*0.0073+0.27;
         }
         else { return 0.675;}
 
     }
+    double antiG (double x)
+    {
+        x=x/10;
+        double y=-0.0066*x*x*x*x+0.1992*x*x*x-1.9275*x*x+5.5915*x+5;
+        if (x>=0)
+            return y*lowerSensitivity;
+        else
+            return 0;
+    }
+
 }
