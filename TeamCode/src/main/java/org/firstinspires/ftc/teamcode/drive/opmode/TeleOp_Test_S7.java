@@ -19,7 +19,7 @@ import com.qualcomm.robotcore.hardware.*;
 @TeleOp(group = "drive")
 
 public class TeleOp_Test_S7 extends LinearOpMode {
-    double liftSensivity=0.075, angleCot=0.5, movementSensitivity=0.6, grip=0, powerUmar=0, angleUmar, resistanceSensivity=0.04;
+    double liftSensivity=0.07, angleCot=0.5, movementSensitivity=0.6, grip=0, powerUmar=0, angleUmar, resistanceSensivity=0.04;
     double mls(double x) //modul de liniaritate si sens
     {
         return x*x*x*movementSensitivity;
@@ -27,28 +27,39 @@ public class TeleOp_Test_S7 extends LinearOpMode {
     double liftPower (double x) //ecuatia miscarii ascendente a bratului
     {
         x=x/10;
+        double y;
         if (x<=8) {
-            double y = -0.0027 * x * x * x * x + 0.0422 * x * x * x - 0.1883 * x * x + 10;
-            return y*liftSensivity;
+            y = -0.0027 * x * x * x * x + 0.0422 * x * x * x - 0.1883 * x * x + 10;
         }
         else
-            return 0;
+            y=0;
+        return y*liftSensivity;
     }
     double resistivePower(double x) //ecuatia anti-graviationala
     {
         x=x/10;
-        double y=-0.0124*x*x*x*x+0.3152*x*x*x-2.5885*x*x+6.496*x+5;
+        double y;
         if (x>1)
-            return y*resistanceSensivity;
+            y=-0.0124*x*x*x*x+0.3152*x*x*x-2.5885*x*x+6.496*x+5;
         else
-            return 0;
+            y=0;
+            return y*resistanceSensivity;
     }
-    double AngleInMotion (double x) //ecuatia dependentei pozitiei cotului in functie de unghiul umarului
+    double AngleInAscendingMotion (double x) //ecuatia dependentei pozitiei cotului in functie de unghiul umarului in urcare
     {
         if (x >= 90)
             return 0.675;
         else
             return 0.3;
+    }
+    double AngleInDescendingMotion (double x) //ecuatia dependentei pozitiei cotului in functie de unghiul umarului in coborare
+    {
+        if (x >= 100)
+            return 0.675;
+        else if (x>=40)
+            return 0.3;
+        else
+            return 0.6;
     }
     @Override
     public void runOpMode() throws InterruptedException {
@@ -63,6 +74,7 @@ public class TeleOp_Test_S7 extends LinearOpMode {
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         umars.setDirection(DcMotorSimple.Direction.REVERSE);
+        holder.setDirection(DcMotorSimple.Direction.REVERSE);
         cots.setDirection(Servo.Direction.REVERSE);
 
         waitForStart();
@@ -88,6 +100,8 @@ public class TeleOp_Test_S7 extends LinearOpMode {
                 liftSensivity-=0.005;
                 Thread.sleep(500);
             }
+
+
             if (gamepad2.right_trigger>0)
             {
                 resistanceSensivity+=0.005;
@@ -107,28 +121,31 @@ public class TeleOp_Test_S7 extends LinearOpMode {
 
             //lift
             if(gamepad2.left_stick_y<-0.2)
+            {
                 powerUmar=liftPower(angleUmar);
+                angleCot=AngleInAscendingMotion(angleUmar);
+            }
             else if(gamepad2.left_stick_y>0.2)
+            {
                 powerUmar=resistivePower(angleUmar);
+                angleCot=AngleInDescendingMotion(angleUmar);
+            }
             else
                 powerUmar=0;
 
-            //atribuire pozitie absoluta coate
-            //angleCot=AngleInMotion(angleUmar);
 
             //control si atribuire
             umard.setPower(powerUmar);
             umars.setPower(powerUmar);
-            holder.setPower(-powerUmar);
+            holder.setPower(powerUmar);
             cotd.setPosition(angleCot);
             cots.setPosition(angleCot);
             gripper.setPosition(grip);
 
             telemetry.addData("Cot:", angleCot);
             telemetry.addData("Umar:", angleUmar);
-            telemetry.addData("liftS", liftSensivity);
-            telemetry.addData("antiG", resistanceSensivity);
-            telemetry.addData("Sensivitate Brat:", liftSensivity);
+            telemetry.addData("Sensivitate Brat In Urcare:", liftSensivity);
+            telemetry.addData("Sensivitate miscare ascendenta", liftSensivity);
             telemetry.update();
         }
 
