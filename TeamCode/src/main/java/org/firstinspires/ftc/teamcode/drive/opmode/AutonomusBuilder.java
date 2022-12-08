@@ -20,6 +20,8 @@ import com.qualcomm.robotcore.hardware.*;
 @TeleOp(group = "drive")
 
 public class AutonomusBuilder extends LinearOpMode {
+
+    double f, b, l, r;
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -31,9 +33,9 @@ public class AutonomusBuilder extends LinearOpMode {
         while (!isStopRequested()) {
             drive.setWeightedDrivePower(
                     new Pose2d(
-                            (double)(gamepad1.dpad_down-gamepad1.dpad_up)*0.3,
-                            (double)(gamepad1.dpad_left-gamepad1.dpad_right)*0.3,
-                            0
+                            gamepad1.left_stick_y*0.3,
+                            gamepad1.left_stick_x*0.3,
+                            gamepad2.right_stick_x*0.3
                     )
             );
 
@@ -41,6 +43,16 @@ public class AutonomusBuilder extends LinearOpMode {
                 drive.turn(Math.toRadians(-90));
             else if (gamepad1.b)
                 drive.turn(Math.toRadians(90));
+
+            if (gamepad1.dpad_up)
+                f=0.3;
+            if(gamepad1.dpad_down)
+                b=0.3;
+            if (gamepad1.dpad_left)
+                l=0.3;
+            if(gamepad1.dpad_right)
+                r=0.3;
+            l=r=f=b=0;
         }
 
     }
