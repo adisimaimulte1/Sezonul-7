@@ -77,15 +77,16 @@ public class AutonomusRedRight extends LinearOpMode
                 .strafeTo(new Vector2d(3, -45))
                 .build();
 
-        Trajectory zona3 = drive.trajectoryBuilder(traj.end()) //parcare zona 1
-                .strafeTo(new Vector2d(18, -45))
-                .build();
-
-        Trajectory zona2 = drive.trajectoryBuilder(traj.end())
-                .strafeTo(new Vector2d(-14,-45))
+        Trajectory zona3 = drive.trajectoryBuilder(traj.end())
+                .strafeTo(new Vector2d(-45,-59))
+                .strafeTo(new Vector2d(-60, -59))
                 .build();
 
         Trajectory zona1 = drive.trajectoryBuilder(traj.end())
+                .strafeTo(new Vector2d(-18,-45))
+                .build();
+
+        Trajectory zona2 = drive.trajectoryBuilder(traj.end())
                 .strafeTo(new Vector2d(-45,-59))
                 .build();
 

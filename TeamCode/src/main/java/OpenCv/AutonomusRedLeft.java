@@ -19,31 +19,30 @@
  * SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package OpenCv;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
-
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
-
-import java.util.ArrayList;
-
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.AprilTagDetectionPipeline;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+
+import java.util.ArrayList;
 
 @TeleOp
-public class AutonomusBlueRight extends LinearOpMode
+public class AutonomusRedLeft extends LinearOpMode
 {
     OpenCvCamera camera;
-    org.firstinspires.ftc.teamcode.AprilTagDetectionPipeline aprilTagDetectionPipeline;
+    AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
     static final double FEET_PER_METER = 3.28084;
 
@@ -70,30 +69,30 @@ public class AutonomusBlueRight extends LinearOpMode
     {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        Pose2d startPose = new Pose2d(-41.75, 64, Math.toRadians(270));
+        Pose2d startPose = new Pose2d(41.75, -64, Math.toRadians(90));
         drive.setPoseEstimate(startPose);
 
         TrajectorySequence traj = drive.trajectorySequenceBuilder(startPose) //pozitionare plasare con preload
-                .strafeTo(new Vector2d(3,34))
-                .strafeTo(new Vector2d(3, 45))
+                .strafeTo(new Vector2d(3,-34))
+                .strafeTo(new Vector2d(3, -45))
                 .build();
 
-        Trajectory zona3 = drive.trajectoryBuilder(traj.end())
-                .strafeTo(new Vector2d(-45,59))
-                .strafeTo(new Vector2d(-60, 59))
-                .build();
-
-        Trajectory zona1 = drive.trajectoryBuilder(traj.end())
-                .strafeTo(new Vector2d(-18,45))
+        Trajectory zona3 = drive.trajectoryBuilder(traj.end()) //parcare zona 1
+                .strafeTo(new Vector2d(18, -45))
                 .build();
 
         Trajectory zona2 = drive.trajectoryBuilder(traj.end())
-                .strafeTo(new Vector2d(-45,59))
+                .strafeTo(new Vector2d(45,-59))
+                .build();
+
+        Trajectory zona1 = drive.trajectoryBuilder(traj.end())
+                .strafeTo(new Vector2d(45,-59))
+                .strafeTo(new Vector2d(60,-59))
                 .build();
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        aprilTagDetectionPipeline = new org.firstinspires.ftc.teamcode.AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
+        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
         camera.setPipeline(aprilTagDetectionPipeline);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
