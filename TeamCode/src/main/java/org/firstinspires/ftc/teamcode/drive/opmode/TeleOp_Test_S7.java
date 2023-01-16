@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drive.opmode;
+/*package org.firstinspires.ftc.teamcode.drive.opmode;
 
 import android.text.method.Touch;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
@@ -30,18 +30,16 @@ public class TeleOp_Test_S7 extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         double sensivity=0.6, position=0.3, movementSensitivity=-0.6, grip=0, liftP=0, lowerP=0;
         boolean u1=true, u2=true, s1=true, s2=true;
-        DcMotor umard = hardwareMap.dcMotor.get("umarDreapta");
-        DcMotor umars= hardwareMap.dcMotor.get("umarStanga");
-        DcMotor holder = hardwareMap.dcMotor.get("motorCentral");
-        Servo cots = hardwareMap.get(Servo.class, "cotStanga");
-        Servo cotd = hardwareMap.get(Servo.class, "cotDreapta");
+        DcMotor slider_stanga = hardwareMap.dcMotor.get("slider_stanga");
+        DcMotor slider_dreapta = hardwareMap.dcMotor.get("slider_dreapta");
+        Servo cot_stanga = hardwareMap.get(Servo.class, "cot_stanga");
+        Servo cot_dreapta = hardwareMap.get(Servo.class, "cot_dreapta");
         Servo gripper = hardwareMap.get(Servo.class, "gripper");
+        slider_dreapta.setDirection(DcMotorSimple.Direction.REVERSE);
+        cot_dreapta.setDirection(Servo.Direction.REVERSE);
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        umars.setDirection(DcMotorSimple.Direction.REVERSE);
-        cots.setDirection(Servo.Direction.REVERSE);
 
         waitForStart();
         while (!isStopRequested()) {
@@ -76,7 +74,7 @@ public class TeleOp_Test_S7 extends LinearOpMode {
                 position-=0.05;
                 Thread.sleep(500);
             }*/
-            telemetry.addData("Pozitie servo cot:", position);
+            /*telemetry.addData("Pozitie servo cot:", position);
             telemetry.addData("Unghi servo cot:", position*270);
 
             //control gripper
@@ -89,7 +87,7 @@ public class TeleOp_Test_S7 extends LinearOpMode {
                 liftP = liftPower((double) holder.getCurrentPosition() * 360 / 8192);
             else if(gamepad2.left_stick_y>0.2)
             {
-                liftP=antiG((double)holder.getCurrentPosition()*360/8192);
+                liftP=antiG((double) holder.getCurrentPosition()*360/8192);
             }
             else
                 liftP = 0;
@@ -149,3 +147,4 @@ public class TeleOp_Test_S7 extends LinearOpMode {
     }
 
 }
+*/
