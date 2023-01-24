@@ -32,8 +32,8 @@ public class TeleOp_Slide_Test1 extends LinearOpMode {
 
     private PIDController controller;
 
-    public static double p = 0.0010782000149, i = 0, d = 0.000100964053001252;
-    public static double f = 0.00095984;
+    public static double p = 0.0010782000149, i = 0, d = 0.000101064053001252;
+    public static double f = 0.00098984;
     public static int targetHigh = 3080, targetMid = 1920, targetLow = 770, target = 200, ante_target = 200;
 
     private final double ticks_in_degree = 70 / 18.0;
@@ -50,6 +50,8 @@ public class TeleOp_Slide_Test1 extends LinearOpMode {
         Servo cot_stanga = hardwareMap.get(Servo.class, "cot_stanga");
         Servo cot_dreapta = hardwareMap.get(Servo.class, "cot_dreapta");
         Servo gripper = hardwareMap.get(Servo.class, "gripper");
+        Servo level = hardwareMap.get(Servo.class, "level"); //down 1.0 ; up 0.65 ;
+        DcMotor ruleta = hardwareMap.get(DcMotor.class, "ruleta");
 
         LeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         RightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -83,16 +85,6 @@ public class TeleOp_Slide_Test1 extends LinearOpMode {
                 }
             }
 
-            /*if (gamepad2.y) { //ground pick //arm position
-                cot_stanga.setPosition(0.15);
-                cot_dreapta.setPosition(0.15);
-            }
-            if (gamepad2.x) {  //pre-drop
-                cot_stanga.setPosition(0.85);
-                cot_dreapta.setPosition(0.85);
-            }*/
-
-
             if (gamepad2.a) { //drop
                 cot_stanga.setPosition(0.9);
                 cot_dreapta.setPosition(0.9);
@@ -104,8 +96,8 @@ public class TeleOp_Slide_Test1 extends LinearOpMode {
                 target = targetHigh;
                 if (ante_target!=target)
                 {
-                    cot_stanga.setPosition(0.20);
-                    cot_dreapta.setPosition(0.20);
+                    cot_stanga.setPosition(0.80);
+                    cot_dreapta.setPosition(0.80);
                     gripper.setPosition(0.58);
                 }
             }
@@ -114,8 +106,8 @@ public class TeleOp_Slide_Test1 extends LinearOpMode {
                 target = targetMid;
                 if (ante_target!=target)
                 {
-                    cot_stanga.setPosition(0.20);
-                    cot_dreapta.setPosition(0.20);
+                    cot_stanga.setPosition(0.80);
+                    cot_dreapta.setPosition(0.80);
                     gripper.setPosition(0.58);
                 }
             }
@@ -124,8 +116,8 @@ public class TeleOp_Slide_Test1 extends LinearOpMode {
                 target = targetLow;
                 if (ante_target!=target)
                 {
-                    cot_stanga.setPosition(0.20);
-                    cot_dreapta.setPosition(0.20);
+                    cot_stanga.setPosition(0.80);
+                    cot_dreapta.setPosition(0.80);
                     gripper.setPosition(0.58);
                 }
             }
@@ -134,13 +126,13 @@ public class TeleOp_Slide_Test1 extends LinearOpMode {
                 target = 200;
                 if (ante_target!=target)
                 {
-                    cot_stanga.setPosition(0.85);
-                    cot_dreapta.setPosition(0.85);
+                    cot_stanga.setPosition(0.15);
+                    cot_dreapta.setPosition(0.15);
                     gripper.setPosition(0.67);
                 }
             }
 
-            /*if (gamepad1.dpad_up)
+            if (gamepad1.dpad_up)
             {
                 servo+=0.05;
                 sleep(500);
@@ -150,7 +142,8 @@ public class TeleOp_Slide_Test1 extends LinearOpMode {
                 servo-=0.05;
                 sleep(500);
             }
-            cot_stanga.setPosition(servo);
+            level.setPosition(servo);
+            /*cot_stanga.setPosition(servo);
             cot_dreapta.setPosition(servo);*/
 
             controller.setPID(p, i, d);
@@ -161,8 +154,8 @@ public class TeleOp_Slide_Test1 extends LinearOpMode {
             LeftMotor.setPower(power);
             RightMotor.setPower(power);
 
-            /*telemetry.addData("pos servo: ", servo);
-            telemetry.update();*/
+            telemetry.addData("pos servo: ", servo);
+            telemetry.update();
         }
     }
 }

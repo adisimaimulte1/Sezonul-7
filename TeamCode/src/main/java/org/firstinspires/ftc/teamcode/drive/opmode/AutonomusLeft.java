@@ -48,8 +48,8 @@ public class AutonomusLeft extends LinearOpMode {
 
     private PIDController controller;
 
-    public static double p = 0.0010782000149, i = 0, d = 0.000100964053001252;
-    public static double f = 0.00095984;
+    public static double p = 0.0010782000149, i = 0, d = 0.000101064053001252;
+    public static double f = 0.00098986;
     public static int targetHigh = 3080, targetMid = 1920, targetLow = 770, target = 200, ante_target = 200;
 
     private final double ticks_in_degree = 70 / 18.0;
@@ -66,6 +66,7 @@ public class AutonomusLeft extends LinearOpMode {
         Servo cot_stanga = hardwareMap.get(Servo.class, "cot_stanga");
         Servo cot_dreapta = hardwareMap.get(Servo.class, "cot_dreapta");
         Servo gripper = hardwareMap.get(Servo.class, "gripper");
+        Servo level = hardwareMap.get(Servo.class, "level");
 
         LeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         RightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
